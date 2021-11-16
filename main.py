@@ -10,22 +10,26 @@ def read_message(offset):
     }
     res = requests.get(api+"/getUpdates", data=data)
     data = res.json()
+    print(res.json())
 
-    for result in data["result"]:
-        chat_id = result["message"]["chat"]["id"]
-        message = result["message"]["text"]     # Message from user
-        message_id = result["message"]["message_id"]
+    try:
+        for result in data["result"]:
+            chat_id = result["message"]["chat"]["id"]
+            message = result["message"]["text"]     # Message from user
+            message_id = result["message"]["message_id"]
 
-        if "/ss" in message:
-            link = message.replace("/ss","")
-            ss(chat_id, link)
+            if "/ss" in message:
+                link = message.replace("/ss","")
+                ss(chat_id, link)
 
-        else:
-            # getting reply text
-            text, is_tag_user = bot_ai(message)
+            else:
+                # getting reply text
+                text, is_tag_user = bot_ai(message)
 
-            # Finally sending reply
-            send_message(chat_id, message_id, text, is_tag_user)
+                # Finally sending reply
+                send_message(chat_id, message_id, text, is_tag_user)
+    except:
+        pass
 
     if data["result"]:
         updated_id = data['result'][-1]["update_id"]+1
@@ -62,7 +66,7 @@ def ss(chat_id, link):
     capture()
 
     data1 = {
-        "chat_id": "1730278745",
+        "chat_id": chat_id,
 
     }
     files = {"photo": open("ss.jpg", "rb")}
